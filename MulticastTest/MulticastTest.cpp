@@ -13,6 +13,7 @@
  *  Listing 1. Multicast Application
  *  http://www.linuxjournal.com/files/linuxjournal.com/linuxjournal/articles/030/3041/3041l1.html
  */
+#define _WINSOCK_DEPRECATED_NO_WARNINGS
 #include <stdio.h>
 #include <stdlib.h> 
 
@@ -301,7 +302,7 @@ int main(int argc, char* argv[])
 							(LPTSTR)& lpMsgBuf, 
 							0, 
 							NULL)) {
-			printf("\tError: %s", lpMsgBuf);
+			printf("\tError: %s", (char *)lpMsgBuf);
 			LocalFree(lpMsgBuf);
 		}
 		exit(1);
