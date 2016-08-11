@@ -182,7 +182,6 @@ DWORD WINAPI MulticastInterface::RecevingThread(_In_ LPVOID lpParameter)
 	char message[MAXLEN + 1];
 	struct sockaddr_in mcast_group;
 	struct ip_mreq mreq;
-	DWORD NoMulticastLoopback = FALSE;
 	
 	MulticastInterface *mi = (MulticastInterface *)lpParameter;
 
