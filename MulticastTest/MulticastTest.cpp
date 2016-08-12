@@ -40,6 +40,7 @@ using namespace std;
 //
 //	These are global to this program.
 //
+CRITICAL_SECTION PrintLock;
 unsigned short int multicastGroupPort;
 unsigned long multicastGroupAddress;
 DWORD multicastTtl;
@@ -160,6 +161,7 @@ void MulticastInterface::Send(string message)
 //
 void MulticastInterface::SendToAll(string message)
 {
+	EnterCriticalSection(&PrintLock);
 	for (list<MulticastInterface *>::iterator it = multicastInterfaces.begin();
 		it != multicastInterfaces.end();
 		it++) {
@@ -168,6 +170,7 @@ void MulticastInterface::SendToAll(string message)
 		mi->Send(message);
 	}
 	printf("\n");
+	LeaveCriticalSection(&PrintLock);
 }
 
 
@@ -215,8 +218,10 @@ DWORD WINAPI MulticastInterface::RecevingThread(_In_ LPVOID lpParameter)
 		}
 
 		message[n] = 0; /* null-terminate string */
+		EnterCriticalSection(&PrintLock);
 		printf("\tReceived message from %s.\n", inet_ntoa(from.sin_addr));
 		printf("\t%s", message);
+		LeaveCriticalSection(&PrintLock);
 	}
 }
 
@@ -258,6 +263,8 @@ int main(int argc, char* argv[])
 	else {
 		multicastTtl = DEFAULT_TTL;
 	}
+
+	InitializeCriticalSection(&PrintLock);
 
 	//	
 	//	Find adapters - from MS example code TestGetIpAddrTable.cpp
